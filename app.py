@@ -21,9 +21,14 @@ class Movie(db.Model):
     def __repr__(self):
         return f'<Movie id={self.id} title={self.title} watched={self.watched} added_at={self.added_at}>'
 
-# Create the database and table
+# Create the database and table with initial movies
 with app.app_context():
     db.create_all()
+    initial_movies = ['Titanic', 'Labyrinth', 'Gone with the Wind', 'Terminator', 'Blade Runner', 'Aliens']
+    for movie_title in initial_movies:
+        if not Movie.query.filter_by(title=movie_title).first():
+            db.session.add(Movie(title=movie_title))
+    db.session.commit()
 
 # Home route to display movie checklist
 @app.route('/')

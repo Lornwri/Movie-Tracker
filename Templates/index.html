@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Movie Checklist 🎬</title>
+    <style>
+        .movie-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .movie-form {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #movie-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .movie-form button {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .movie-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+        }
+        
+        .movie-item.watched {
+            background-color: #f8fafc;
+            text-decoration: line-through;
+            color: #718096;
+        }
+        
+        .movie-item span {
+            flex: 1;
+        }
+        
+        .movie-item small {
+            color: #718096;
+            margin: 0 10px;
+        }
+        
+        .movie-item a {
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .movie-item a[aria-label="Delete movie"] {
+            color: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="movie-container">
+        <h1>My Movie Checklist 🎬</h1>
+        <form action="{{ url_for('add') }}" method="post" class="movie-form">
+            <input type="text" id="movie-input" name="title" placeholder="Add a new movie..." required aria-label="New movie">
+            <button type="submit">Add Movie</button>
+        </form>
+        <div role="list" aria-label="Movie list">
+            {% for movie in movies %}
+            <div role="listitem" class="movie-item {% if movie.watched %}watched{% endif %}">
+                <span>{{ movie.title }}</span>
+                <small>{{ movie.added_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                <a href="{{ url_for('toggle', movie_id=movie.id) }}" aria-label="{% if movie.watched %}Mark as unwatched{% else %}Mark as watched{% endif %}">
+                    {% if movie.watched %}🔄{% else %}✅{% endif %}
+                </a>
+                <a href="{{ url_for('delete', movie_id=movie.id) }}" aria-label="Delete movie">🗑️</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
